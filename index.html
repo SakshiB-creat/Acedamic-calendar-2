@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Academic Calendar Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+    * {
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .login-container {
+      background: #fff;
+      padding: 40px 40px 30px 40px;
+      border-radius: 16px;
+      box-shadow: 0 15px 25px rgba(0,0,0,0.30);
+      width: 350px;
+      max-width: 98vw;
+      text-align: center;
+      color: #333;
+      transition: transform 0.3s;
+    }
+    .login-container:hover {
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 22px 32px rgba(0,0,0,0.33);
+    }
+    .login-container h2 {
+      font-weight: 600;
+      margin-bottom: 25px;
+      font-size: 27px;
+      color: #5B2C6F;
+      letter-spacing: 1px;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 13px 15px;
+      margin: 13px 0 18px 0;
+      border: 1px solid #dedede;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #f8f8fc;
+      color: #2d2d2d;
+    }
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #764ba2;
+      box-shadow: 0 0 7px #b39ddb99;
+      background: #fff;
+    }
+    button {
+      background: linear-gradient(90deg, #6a1b9a 66%, #8e24aa 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 13px 0 13px 0;
+      width: 100%;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 5px;
+      transition: background 0.3s, box-shadow 0.3s;
+      box-shadow: 0 6px 12px #9c27b061;
+    }
+    button:hover, button:focus {
+      background: linear-gradient(90deg, #8e24aa 50%, #ab47bc 100%);
+      box-shadow: 0 9px 20px #ab47bcbb;
+    }
+    #login-msg {
+      margin-top: 18px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #D84315;
+      min-height: 20px;
+    }
+    @media(max-width: 500px) {
+      body {
+        padding: 0;
+      }
+      .login-container {
+        width: 97vw;
+        padding: 22px 9vw 18px 9vw;
+        border-radius: 11px;
+      }
+      .login-container h2 {
+        font-size: 22px;
+        margin-bottom: 17px;
+      }
+      input[type="text"], input[type="password"] {
+        font-size: 15px;
+      }
+      button {
+        font-size: 16px;
+        padding: 11px 0 11px 0;
+      }
+    }
+    @media(max-width: 350px) {
+      .login-container {
+        padding: 15px 3vw 12px 3vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Academic Calendar Login</h2>
+    <input type="text" id="username" placeholder="Username" autocomplete="username" />
+    <input type="password" id="password" placeholder="Password" autocomplete="current-password" />
+    <button onclick="login()">Login</button>
+    <div id="login-msg"></div>
+  </div>
+  <script>
+    const apiURL = "https://script.google.com/macros/s/AKfycbzsMIwmP48TRS4eIgDHNPzgQiQysQPQdQClLVshJ2qBqWJ5qgbDTpp0dUwPv6JzfMPVUA/exec";
+
+    function login() {
+      let uname = document.getElementById("username").value;
+      let pwd = document.getElementById("password").value;
+      fetch(`${apiURL}?action=login&username=${uname}&password=${pwd}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.admin) {
+            localStorage.setItem("role", "admin");
+            window.location.href = "admin.html";
+          } else if (data.success && data.emp) {
+            localStorage.setItem("role", "employee");
+            localStorage.setItem("emp", JSON.stringify(data.emp));
+            window.location.href = "employee.html";
+          } else {
+            document.getElementById("login-msg").textContent = "Invalid credentials";
+          }
+        });
+    }
+  </script>
+</body>
+</html> 
+
+

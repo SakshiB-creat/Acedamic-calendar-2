@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin - Academic Calendar</title>
+  <link rel="stylesheet" href="style.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div class="admin-container">
+    
+    <!-- DASHBOARD HEADER -->
+    <div class="dashboard-header">
+      <h2><span style="font-size:1.5rem;">&#128188;</span> Admin Dashboard</h2>
+      <button onclick="logout()" id="logout-btn">
+        Logout <span style="font-size:1.2rem;">&#8618;</span>
+      </button>
+    </div>
+
+    <!-- CALENDAR CARD -->
+    <div class="calendar-card">
+      <div class="calendar-header">
+        <button id="prevMonth" class="nav-btn">&lt;</button>
+        <span id="monthYear"></span>
+        <button id="nextMonth" class="nav-btn">&gt;</button>
+      </div>
+      <div class="calendar-weekdays">
+        <div>Sun</div><div>Mon</div><div>Tue</div>
+        <div>Wed</div><div>Thu</div>
+        <div>Fri</div><div>Sat</div>
+      </div>
+      <div id="calendarDays" class="calendar-days"></div>
+      
+      <!-- Calendar Legend -->
+      <div class="calendar-legend">
+        <div class="legend-item"><span class="legend-color holiday-color"></span> Holiday/C-WO</div>
+        <div class="legend-item"><span class="legend-color weekoff-color"></span> Standard WO</div>
+        <div class="legend-item"><span class="legend-color leave-color"></span> Approved Leave</div>
+        <div class="legend-item"><span class="legend-color today-color"></span> Today</div>
+      </div>
+    </div>
+    
+    <!-- FUNCTIONAL SECTIONS GRID (Forms & Lists) -->
+    <div class="section-grid">
+      
+      <!-- Employee List Section with Search -->
+      <div id="employeePanel">
+        <h3><span style="font-size:1.3rem;">&#128100;</span> Employee List</h3>
+        <input type="text" id="empSearch" placeholder="Search employees by name or ID" oninput="filterEmployees()" />
+        <ul id="employeeList" class="employee-list"></ul>
+      </div>
+      
+      <!-- Leave Requests Notifications -->
+     <div id="leave-requests-list" class="events-section">
+        <h3><span style="font-size:1.3rem;">&#128276;</span> Leave Requests Notifications</h3>
+        <table id="admin-leave-requests"></table>
+        
+        <div id="leave-pagination-controls" class="pagination-controls">
+            </div>
+        
+      </div>
+      
+      <!-- Upcoming Events -->
+      <div id="events-list" class="events-section">
+        <h3><span style="font-size:1.3rem;">&#128197;</span> Upcoming Events (Holidays/Custom WO)</h3>
+        <table id="events"></table>
+        
+        <div id="event-pagination-controls" class="pagination-controls">
+            </div>
+        
+      </div>
+
+      <!-- Combined Add Forms (Employee, Holiday, Week Off) -->
+      <div id="add-forms-container">
+        <!-- Using tabs for cleaner look on small screens -->
+        <div id="tab-controls" style="display:flex; margin-bottom: 5px;">
+          <button onclick="showTab('employee')" style="background:var(--primary-color); color:white; border:none; padding: 10px 15px; cursor:pointer; border-radius: 8px 0 0 0;" id="tab-employee-btn">Add Employee</button>
+          <button onclick="showTab('holiday')" style="background:#ddd; color:var(--text-dark); border:none; padding: 10px 15px; cursor:pointer;" id="tab-holiday-btn">Add Holiday</button>
+          <button onclick="showTab('weekoff')" style="background:#ddd; color:var(--text-dark); border:none; padding: 10px 15px; cursor:pointer; border-radius: 0 8px 0 0;" id="tab-weekoff-btn">Add WeekOff</button>
+        </div>
+        
+        <div id="add-employee" class="form-section tab-content">
+          <h3>Add New Employee</h3>
+          <form autocomplete="off">
+            <div class="form-row"><input placeholder="ID" id="empid" required /></div>
+            <div class="form-row"><input placeholder="Name" id="empname" required /></div>
+            <div class="form-row"><input placeholder="Email" id="empemail" required /></div>
+            <div class="form-row"><input placeholder="Department" id="empdept" required /></div>
+            <div class="form-row">
+              <select id="empweekoff" required>
+                <option value="" hidden>Select Standard Week Off</option>
+                <option value="Sunday">Sunday</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+              </select>
+            </div>
+            <div class="form-row"><input placeholder="Username" id="empusername" required /></div>
+            <div class="form-row"><input placeholder="Password" id="emppassword" type="password" required /></div>
+           <button id="addEmployeeBtn" onclick="addEmployee()">
+    Add Employee
+</button>
+          </form>
+        </div>
+
+        <div id="add-holiday" class="form-section tab-content" style="display:none;">
+          <h3>Add Global Holiday</h3>
+          <form autocomplete="off">
+            <div class="form-row"><input type="date" id="holidaydate" required /></div>
+            <div class="form-row"><input placeholder="Holiday Name" id="holidayname" required /></div>
+            <div class="form-row">
+                <select id="holidaytype" required>
+                    <option value="" hidden>Select Holiday Type</option>
+                    <option value="PH">Public Holiday</option>
+                    <option value="CH">Company Holiday</option>
+                    <option value="BDAY">Birthday</option>
+                    <option value="WO">Custom Week Off (WO)</option>
+                </select>
+            </div>
+            <button type="button" onclick="addHoliday()">Add Holiday</button>
+          </form>
+        </div>
+
+        <div id="add-weekoff" class="form-section tab-content" style="display:none;">
+          <h3>Add Custom WeekOff (Single Employee)</h3>
+          <form autocomplete="off">
+            <div class="form-row"><input type="date" id="cweekoffdate" required /></div>
+            <div class="form-row"><input placeholder="Employee Name" id="cweekoffname" required /></div>
+            <div class="form-row"><input placeholder="Reason (e.g., training, travel)" id="cweekoffreason" required /></div>
+            <button type="button" onclick="addWeekOff()">Add Custom WeekOff</button>
+          </form>
+        </div>
+
+      </div> <!-- End of Forms Container -->
+
+    </div> <!-- End of Section Grid -->
+
+
+<div id="employeeModal" class="modal" onclick="if(event.target.id === 'employeeModal') closeEmployeeModal()">
+    <div class="modal-content">
+        <span class="close" onclick="closeEmployeeModal()">&times;</span> 
+
+        <div class="modal-body-scroll">
+            
+            <div class="employee-details-section">
+                <h3 id="modalEmpName">Employee Name</h3>
+                <p><strong>ID:</strong> <span id="modalEmpId"></span></p>
+                <p><strong>Email:</strong> <span id="modalEmpEmail"></span></p>
+                <p><strong>Department:</strong> <span id="modalEmpDept"></span></p>
+                <p><strong>Standard Weekoff:</strong> <span id="modalEmpWeekOff"></span></p>
+            </div>
+            
+            <div class="calendar-card employee-calendar-modal-card">
+                <div class="calendar-header calendar-header-modal">
+                    <button id="modalPrevMonth">&lt;</button>
+                    <h4 id="modalMonthYear">November 2025</h4>
+                    <button id="modalNextMonth">&gt;</button>
+                </div>
+                <div class="calendar-weekdays">
+                    </div>
+                <div id="modalEmpCalendar" class="calendar-days">
+    </div>
+
+<div class="calendar-legend">
+    <div class="legend-item">
+        <div class="legend-color holiday-color"></div>
+        <span>Holiday/C-WO</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color weekoff-color"></div>
+        <span>Standard WO</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color leave-color"></div>
+        <span>Approved Leave</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color today-color"></div>
+        <span>Today</span>
+    </div>
+</div>
+                
+                <div class="calendar-legend">
+                    </div>
+            </div>
+            </div> 
+    </div>
+</div>
+
+
+  </div>
+  <!-- Tab functionality script -->
+  <script>
+    function showTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.style.display = 'none';
+      });
+      document.querySelectorAll('#tab-controls button').forEach(btn => {
+        btn.style.background = '#ddd';
+        btn.style.color = 'var(--text-dark)';
+      });
+      
+      const selectedTab = document.getElementById('add-' + tabName);
+      if (selectedTab) selectedTab.style.display = 'block';
+
+      const selectedBtn = document.getElementById('tab-' + tabName + '-btn');
+      if (selectedBtn) {
+        selectedBtn.style.background = 'var(--primary-color)';
+        selectedBtn.style.color = 'white';
+      }
+    }
+    // Ensure the employee tab is shown on load
+    document.addEventListener('DOMContentLoaded', () => showTab('employee'));
+  </script>
+  <script src="admin.js"></script>
+  
+  
+</body>
+</html>

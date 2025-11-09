@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee - Academic Calendar</title>
+    <link rel="stylesheet" href="style.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="admin-container">
+        
+        <div class="dashboard-header">
+            <h2><span style="font-size:1.5rem;">&#128100;</span> Welcome <span id="emp-name" style="color:var(--text-dark);"></span></h2>
+            <button onclick="logout()" id="logout-btn">
+                Logout <span style="font-size:1.2rem;">&#8618;</span>
+            </button>
+        </div>
+
+        <div class="calendar-card">
+            <div class="calendar-header">
+                <button id="empPrevMonth" class="nav-btn">&lt;</button>
+                <span id="empMonthYear"></span>
+                <button id="empNextMonth" class="nav-btn">&gt;</button>
+            </div>
+            <div class="calendar-weekdays">
+                <div>Sun</div><div>Mon</div><div>Tue</div>
+                <div>Wed</div><div>Thu</div>
+                <div>Fri</div><div>Sat</div>
+            </div>
+            <div id="empCalendarDays" class="calendar-days"></div>
+
+            <div class="calendar-legend">
+                <div class="legend-item"><span class="legend-color holiday-color"></span> Holiday/C-WO</div>
+                <div class="legend-item"><span class="legend-color weekoff-color"></span> Standard WO</div>
+                <div class="legend-item"><span class="legend-color leave-color"></span> Approved Leave</div>
+                <div class="legend-item"><span class="legend-color today-color"></span> Today</div>
+            </div>
+        </div>
+
+        <div class="section-grid" style="grid-template-columns: 1fr; gap: 20px;">
+        
+            <div id="apply-leave-section" class="form-section">
+                <h3><span style="font-size:1.3rem;">&#128197;</span> Apply for Leave</h3>
+                <form id="apply-leave-form" autocomplete="off">
+                    <div class="form-row"><input id="leave-id" type="text" placeholder="Employee ID" required /></div>
+                    <div class="form-row"><input id="leave-name" type="text" placeholder="Name" required /></div>
+                    <div class="form-row"><input id="leave-email" type="email" placeholder="Email" required /></div>
+                    <div class="form-row"><input id="leave-date" type="date" required /></div>
+                    <div class="form-row">
+                        <select id="leave-type" required>
+                            <option value="" hidden>Select Leave Type</option>
+                            <option value="Casual">Casual Leave (CL)</option>
+                            <option value="Privilege">Privilege Leave (PL)</option>
+                            <option value="Sick">Sick Leave (SL)</option>
+                            <option value="Paid">Paid Leave</option>
+                            <option value="Unpaid">Unpaid Leave</option>
+                        </select>
+                    </div>
+                    <button type="button" onclick="applyLeave()">Submit</button>
+                    <div id="leave-msg"></div>
+                </form>
+            </div>
+            
+            <div id="emp-leave-table" class="events-section">
+                <h3><span style="font-size:1.3rem;">&#128196;</span> Your Leave Applications</h3>
+                </div>
+
+            <div id="events-list" class="events-section">
+                <h3><span style="font-size:1.3rem;">&#128276;</span> Upcoming Events (Holidays/Custom WO)</h3>
+                <table id="emp-events"></table>
+            </div>
+        </div>
+    </div>
+    <script src="gs_api.js"></script>
+    <script src="employee.js"></script>
+</body>
+</html>
