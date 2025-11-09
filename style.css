@@ -264,23 +264,18 @@ body {
 
 /* Calendar Days Grid me har cell (div) ko target karein */
 /* ===== CALENDAR DATES ===== */
-.calendar-days div {
-    /* ... existing styles ... */
-    
-    /* Height ko wapas 70px rakhte hain desktop ke liye (ya jo bhi aapko chahiye) */
-    height: 70px; 
-    
-    /* --- KEY CHANGES: Content ko stack aur justify karein --- */
-    display: flex;
-    flex-direction: column; /* Date aur label ko vertically stack karega */
-    align-items: center;
-    /* 🎯 FIX 1: Content ko top aur bottom se thodi space denge */
-    justify-content: center; 
-    /* Agar overlap ho raha hai toh space-around/between try karein */
-    /* justify-content: space-evenly; */ /* Yeh bhi try kar sakte hain */
-    
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    /* 🎯 FIX 1: Border-box ensure karta hai ki padding aur border width ke andar ho */
     box-sizing: border-box; 
-    /* ... existing styles ... */
+    gap: 10px; /* Same gap between all date columns */
+    overflow: hidden; 
+    position: relative; 
+    transition: height 0.3s ease-out; 
+    padding: 0 10px; /* Horizontal padding added to container (optional but helps) */
+
+    box-sizing: border-box;
 }
 
 /* 🎯 Agar PH/CH label date number ke upar overlap ho raha hai, toh isko thoda chhota kar dein */
@@ -961,71 +956,78 @@ button:hover {
     
     /* --- CALENDAR ADJUSTMENTS (Mobile View) --- */
 /* ===== RESPONSIVE STYLES (Mobile First: max-width: 768px) ===== */
-/* ===== RESPONSIVE STYLES (Mobile First: max-width: 768px) ===== */
 @media (max-width: 768px) {
-    /* ... (Existing mobile styles) ... */
+    /* --- CALENDAR ADJUSTMENTS (Mobile View) --- */
     
-    /* Employee Modal Content (for all inner elements) */
-    .modal-content {
-        padding: 15px; /* Mobile पर कम से कम 15px पैडिंग रखें */
-        width: 95%; 
-        max-height: 95vh;
-        margin: 20px auto; 
+    /* 🎯 FIX 1: Calendar Day Block Size Adjustments */
+    .calendar-days div {
+        /* Height ko thoda aur kam karein ya auto rakhein */
+        height: 50px; /* 55px se 50px kiya, agar 55px par bhi issue ho */
+        
+        /* Padding ko kam karein taki space mile */
+        padding: 3px; 
+        
+        /* Font size ko kam karein taki date overlap na ho */
+        font-size: 0.85rem; 
+        
+        /* Ensure content is centered, jaisa aapne set kiya hai */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        .calendar-card {
+        padding: 10px; /* Calendar card ki padding kam ki */
     }
 
-    /* Modal Heading Size */
-    .modal-content h3 {
-        font-size: 1.1rem; 
-        margin-bottom: 10px;
+    /* 🎯 FIX 3: Calendar Days Container (Grid) Fix */
+    .calendar-days {
+        /* Mobile par gap ko thoda aur kam karein */
+        gap: 5px; 
+        /* Container ki padding kam rakhein ya 0 kar dein, agar card padding use ho rahi ho */
+        padding: 0; 
     }
-    
-    /* Calendar Modal Header buttons */
-    .calendar-header-modal button {
-        padding: 5px 8px; 
-        font-size: 0.8rem;
-    }
-    
-    /* 🎯 FIX 1: Details Section Padding Adjustment */
-    /* Modal content ki padding badhane ke baad, isko adjust karein */
-    .employee-details-section {
-        /* Horizontal padding 0 rakhein, kyunki modal content padding de chuka hai */
-        padding: 15px 0 15px 0; 
-        margin-bottom: 15px; /* Gap ko thoda kam kiya */
-    }
-    
-    /* 🎯 FIX 2: Details Row Adjustment (Ensure alignment) */
-    .employee-details-section p, 
-    .employee-details-section .employee-detail-row {
-        /* Mobile पर फ़ॉन्ट साइज़ को थोड़ा और कम करें */
-        font-size: 0.9rem; 
+
+    /* 🎯 FIX 4: Calendar Date Block Size Adjustments (Most Important) */
+    .calendar-days div {
+        /* Height ko thoda aur kam kiya */
+        height: 45px; 
         
-        /* अगर Flexbox Mobile पर टूट रहा है: */
-        /* FlexWrap: wrap ऐड करें ताकि बहुत लंबे नाम/वैल्यू अगली लाइन पर आ जाएँ */
-        flex-wrap: wrap; 
+        /* Padding ko bahut kam karein taki space mile */
+        padding: 2px; 
         
-        /* Label और Value के बीच का Gap सही रखें */
-        gap: 5px;
-    }
-    
-    /* 🎯 FIX 3: Label (strong) को फ़ोर्स करें ताकि वह कम जगह ले */
-    .employee-details-section strong {
-        /* Label को Fixed width दे सकते हैं, लेकिन % में देना बेहतर है */
-        /* या फिर सिर्फ़ font-weight bold रखें */
-        font-weight: 700;
-        /* max-width: 40%; *//* Optional: अगर Label बहुत लंबा हो रहा हो */
+        /* Font size ko kam karein */
+        font-size: 0.8rem; 
         
-        /* Margin right दें ताकि value से गैप बना रहे */
-        margin-right: 5px; 
+        /* Border radius ko bhi thoda kam kar sakte hain */
+        border-radius: 10px; 
     }
     
-    /* 🎯 FIX 4: Value (span) को बाकी जगह लेने दें */
-    .employee-details-section span {
-        /* बाक़ी बची हुई जगह value ले ले */
-        flex-grow: 1; 
-        /* Word break properties यहाँ भी काम करेंगी */
+    /* 🎯 FIX 5: Weekdays ko bhi adjust karein */
+    .calendar-weekdays {
+        font-size: 0.75rem;
+        gap: 5px; /* Calendar days se match karein */
+    }
+
+    /* 🎯 FIX 6: Holiday Label ka size aur kam karein */
+    .holiday-type {
+        font-size: 0.55rem; 
+        margin-top: 1px;
+    }
     }
     
-    /* ... (rest of the mobile styles) ... */
+    /* 🎯 FIX 2: Holiday Label/Type ka size aur margin kam karein */
+    .holiday-type {
+        font-size: 0.6rem; /* Label ka size kam kiya */
+        margin-top: 2px; /* Date aur label ke beech ki space kam ki */
+    }
+    
+    /* 🎯 FIX 3: Container Gap ko thoda kam kar sakte hain (Optional, agar zyada chipke lage toh mat karein) */
+    .calendar-days {
+        gap: 8px; /* 10px se 8px kiya */
+    }
+
+    /* ... baaki ke mobile styles ... */
 }
 
 /* Yeh nikal dein, agar apne pehle add kiya tha to: */
